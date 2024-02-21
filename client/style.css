@@ -1,6 +1,128 @@
-html, body {
+* {
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+  color: white;
+}
+
+body {
+  background-color: #121212;
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
 }
+
+header {
+  text-align: center;
+  font-weight: 800;
+}
+
+p {
+  font-weight: 300;
+}
+
+h3 {
+  font-weight: 700;
+}
+
+span {
+  position: absolute;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+  animation: animate 1s linear infinite;
+  z-index: 4;
+}
+
+@keyframes animate {
+  0%
+  {
+    background-color: rgba(255, 255, 255, 0.15);
+    width: 0;
+    height: 0;
+    opacity: 0.2;
+  }
+  100%
+  {
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 500px;
+    height: 500px;
+    opacity: 0;
+  }
+}
+
+#currentTeam {
+  margin: auto;
+  width: 800px;
+  text-align: center;
+  padding: 20px;
+}
+
+#party {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+}
+
+#party:hover > .partySpot > .spot-border {
+  opacity: 1;
+}
+
+.partySpot {
+  position: relative;
+  flex: 1;
+  max-width: 200px;
+  aspect-ratio: 1/1;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.partySpot:hover::before {
+  opacity: 1;
+}
+
+.partySpot::before,
+.partySpot > .spot-border {
+  border-radius: inherit;
+  content: "";
+  position: absolute;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 500ms;
+  z-index: 2;
+  }
+
+  .partySpot::before {
+    background: radial-gradient(
+      300px circle at var(--mouse-x) var(--mouse-y), 
+      rgba(255, 255, 255, 0.06),
+      transparent 40%
+    );
+    z-index: 3;
+  }
+
+  .partySpot > .spot-border {
+    background: radial-gradient(
+      150px circle at var(--mouse-x) var(--mouse-y), 
+      rgba(255, 255, 255, 0.3),
+      transparent 40%
+    );
+    z-index: 1;
+  }
+
+  .partySpot > .spot-content {
+    background-color: rgb(33, 33, 33);
+    border-radius: inherit;
+    margin: 1px;
+    height: calc(100% - 2px);
+    width: calc(100% - 2px);
+    position: relative;
+    z-index: 2;
+  }
