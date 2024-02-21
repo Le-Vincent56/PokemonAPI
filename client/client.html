@@ -6,182 +6,48 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="/style.css">
-    <script>
-      const handleResponse = async (response, parseResponse) => {
-        // Get the content section for later writing
-        const content = document.querySelector('#content');
-
-        // Determine the result of the given status responses
-        switch(response.status)
-        {
-          case 200:
-            content.innerHTML = '<b>Success</b>';
-            break;
-            
-          case 201:
-          content.innerHTML = '<b>Created</b>';
-            break;
-
-          case 204:
-            content.innerHTML = '<b>Updated (No Content)</b>'
-            break;
-
-          case 400:
-          content.innerHTML = '<b>Bad Request</b>';
-            break;
-
-          case 404:
-          content.innerHTML = '<b>Resource Not Found</b>';
-            break;
-
-          default:
-          content.innerHTML = '<b>Error code not implemented by client</b>';
-            break;
-        }
-
-        // Check if we should parse a response
-        if(parseResponse)
-        {
-          // Parse the response to JSON
-          let obj = await response.json();
-
-          // Check for a message
-          if(obj.message)
-          {
-            // Display the messgae
-            content.innerHTML += `<p>${obj.message}</p>`;
-          }
-        } else {
-          // State that meta data was received if a response should not be parsed
-          content.innerHTML += '<p>Meta Data Received</p>';
-        }
-      }
-
-      const requestUpdateMethod = async (userForm) => {
-        // Grab the URL and method form the form
-        const url = userForm.querySelector('#urlField').value;
-        const method = userForm.querySelector('#methodSelect').value;
-
-        // Await the fetch response
-        let response = await fetch(url, {
-          method: method,
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        // Handle the response when fetched, parse if not a HEAD method call
-        handleResponse(response, method === 'get');
-      }
-
-      const requestAddUser = async (nameForm) => {
-        //Grab all the info from the form
-        const nameAction = nameForm.getAttribute('action');
-        const nameMethod = nameForm.getAttribute('method');
-        
-        const nameField = nameForm.querySelector('#nameField');
-        const ageField = nameForm.querySelector('#ageField');
-
-        //Build a data string in the FORM-URLENCODED format.
-        const formData = `name=${nameField.value}&age=${ageField.value}`;
-
-        //Make a fetch request and await a response.
-        let response = await fetch(nameAction, {
-          method: nameMethod,
-          headers: {
-            'Content-Type': 'application/x-www-urlencoded',
-            'Accept': 'application/json',
-          },
-          body: formData,
-        });
-
-        //Once we have a response, handle it.
-        handleResponse(response, true);
-      }
-
-      const init = () => {
-        // Assign hover effects
-        const partySpots = document.querySelectorAll('.partySpot');
-        const partyHolder = document.querySelector('#party');
-        partyHolder.onmousemove = (e) => {
-          for(const spot of partySpots) {
-            const rect = spot.getBoundingClientRect()
-            const x = e.clientX - rect.left
-            const y = e.clientY - rect.top;
-
-            spot.style.setProperty('--mouse-x', `${x}px`);
-            spot.style.setProperty('--mouse-y', `${y}px`);
-          }
-        }
-
-        // Assign ripple effects
-        for(const spot of partySpots) {
-          spot.onclick = (e) => {
-            const x = e.clientX - e.target.offsetLeft;
-            const y = e.clientY - e.target.offsetTop;
-
-            let ripples = document.createElement('span');
-            ripples.style.left = x + 'px';
-            ripples.style.top = y + 'px';
-            spot.appendChild(ripples);
-
-            setTimeout(() => {
-              ripples.remove()
-            }, 1000);
-          }
-        }
-
-        const availablePokemon = document.querySelector("#availablePokemon");
-        for(let i = 0; i < 809; i++) {
-          availablePokemon.innerHTML += 
-          `<div class=pokemonSelect>
-              <img>
-           </div>
-          `;
-        }
-      }
-
-      window.onload = init;
-    </script>
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <script src="src/main.js" type="module"></script>
   </head>
   <body>
     <header>
       <h1>Pokemon Team Builder</h1>
     </header>
     <main>
-      <div id="currentTeam">
-        <h3 id="teamHeader">CURRENT TEAM</h3>
+      <div id="current-team">
+        <h3 id="team-header">CURRENT TEAM</h3>
         <div id="party">
-          <div class="partySpot">
+          <div class="party-spot">
             <div class="spot-border"></div>
             <div class="spot-content"></div>
           </div>
-          <div class="partySpot">
+          <div class="party-spot">
             <div class="spot-border"></div>
             <div class="spot-content"></div>
           </div>
-          <div class="partySpot">
+          <div class="party-spot">
             <div class="spot-border"></div>
             <div class="spot-content"></div>
           </div>
-          <div class="partySpot">
+          <div class="party-spot">
             <div class="spot-border"></div>
             <div class="spot-content"></div>
           </div>
-          <div class="partySpot">
+          <div class="party-spot">
             <div class="spot-border"></div>
             <div class="spot-content"></div>
           </div>
-          <div class="partySpot">
+          <div class="party-spot">
             <div class="spot-border"></div>
             <div class="spot-content"></div>
           </div>
         </div>
       </div>
 
-      <div id="availablePokemon">
+      <div id="display-container">
+        <div id="available-pokemon">
 
+        </div>
       </div>
     </main>
   </body>

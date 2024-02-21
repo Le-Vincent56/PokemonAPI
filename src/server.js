@@ -5,6 +5,7 @@ const query = require('querystring');
 const htmlHandler = require('./htmlResponses.js');
 const cssHandler = require('./cssResponses.js');
 const jsonHandler = require('./jsonResponses.js');
+const jsHandler = require('./jsResponses.js');
 
 // Establish port
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
@@ -12,15 +13,19 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 const urlStruct = {
   GET: {
     '/': htmlHandler.getIndexPage,
-    '/style.css': cssHandler.getIndexStyle,
-    '/spotStyle.css': cssHandler.getSpotStyle,
+    '/styles/style.css': cssHandler.getIndexStyle,
+    '/src/main.js': jsHandler.getMainJS,
+    '/src/serverInteraction.js': jsHandler.getJSFile,
+    '/src/uiEffects.js': jsHandler.getJSFile,
+    '/src/databaseLoader.js': jsHandler.getJSFile,
+    '/data/pokedex.json': jsonHandler.getPokedex,
     notFound: jsonHandler.notFound,
   },
   HEAD: {
     notFound: jsonHandler.notFoundMeta,
   },
   POST: {
-    '/addUser': jsonHandler.updateUser,
+    
   },
 };
 
@@ -66,6 +71,11 @@ const onRequest = (request, response) => {
     if (request.method === 'POST') {
       // Parse the data being uploaded
       return parseBody(request, response, urlStruct[request.method][parsedURL.pathname]);
+    }
+
+    // Get requests for .js files
+    if (request.method === 'GET' && parsedURL.pathname.substring(0, 5) === '/src/') {
+      return urlStruct[request.method][parsedURL.pathname](request, response, parsedURL.pathname);
     }
 
     // Return the path's response

@@ -25,6 +25,7 @@ h3 {
   font-weight: 700;
 }
 
+/* Current Team Display */
 span {
   position: absolute;
   background: #fff;
@@ -52,7 +53,7 @@ span {
   }
 }
 
-#currentTeam {
+#current-team {
   margin: auto;
   width: 800px;
   text-align: center;
@@ -66,11 +67,11 @@ span {
   gap: 8px;
 }
 
-#party:hover > .partySpot > .spot-border {
+#party:hover > .party-spot > .spot-border {
   opacity: 1;
 }
 
-.partySpot {
+.party-spot {
   position: relative;
   flex: 1;
   max-width: 200px;
@@ -81,12 +82,12 @@ span {
   overflow: hidden;
 }
 
-.partySpot:hover::before {
+.party-spot:hover::before {
   opacity: 1;
 }
 
-.partySpot::before,
-.partySpot > .spot-border {
+.party-spot::before,
+.party-spot > .spot-border {
   border-radius: inherit;
   content: "";
   position: absolute;
@@ -97,32 +98,53 @@ span {
   opacity: 0;
   transition: opacity 500ms;
   z-index: 2;
-  }
+}
 
-  .partySpot::before {
-    background: radial-gradient(
-      300px circle at var(--mouse-x) var(--mouse-y), 
-      rgba(255, 255, 255, 0.06),
-      transparent 40%
-    );
-    z-index: 3;
-  }
+.party-spot::before {
+  background: radial-gradient(
+    300px circle at var(--mouse-x) var(--mouse-y), 
+    rgba(255, 255, 255, 0.06),
+    transparent 40%
+  );
+  z-index: 3;
+}
 
-  .partySpot > .spot-border {
-    background: radial-gradient(
-      150px circle at var(--mouse-x) var(--mouse-y), 
-      rgba(255, 255, 255, 0.3),
-      transparent 40%
-    );
-    z-index: 1;
-  }
+.party-spot > .spot-border {
+  background: radial-gradient(
+    150px circle at var(--mouse-x) var(--mouse-y), 
+    rgba(255, 255, 255, 0.3),
+    transparent 40%
+  );
+  z-index: 1;
+}
 
-  .partySpot > .spot-content {
-    background-color: rgb(33, 33, 33);
-    border-radius: inherit;
-    margin: 1px;
-    height: calc(100% - 2px);
-    width: calc(100% - 2px);
-    position: relative;
-    z-index: 2;
-  }
+.party-spot > .spot-content {
+  background-color: rgb(33, 33, 33);
+  border-radius: inherit;
+  margin: 1px;
+  height: calc(100% - 2px);
+  width: calc(100% - 2px);
+  position: relative;
+  z-index: 2;
+}
+
+/* Available Pokemon Display */
+#display-container {
+  margin-top: 3rem;
+  text-align: center;
+  margin-left: 4vw;
+  margin-right: 4vw;
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+
+#available-pokemon {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  row-gap: 10px;
+}
+
+.pokemon-display {
+  flex-basis: 15%;
+}
