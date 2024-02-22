@@ -11,11 +11,11 @@ const getMainJS = (request, response) => {
 };
 
 const getJSFile = (request, response, fileName) => {
-    const file = fs.readFileSync(`${__dirname}/../client/${fileName}`);
-    response.writeHead(200, { 'Content-Type': 'text/javascript'});
-    response.write(file);
-    response.end();
-}
+  const file = fs.readFileSync(`${__dirname}/../client/${fileName}`);
+  response.writeHead(200, { 'Content-Type': 'text/javascript' });
+  response.write(file);
+  response.end();
+};
 
 // Exports
 module.exports.getMainJS = getMainJS;

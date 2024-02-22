@@ -3,6 +3,7 @@ const fs = require('fs');
 
 // Create an object in memory
 const pokedex = fs.readFileSync(`${__dirname}/../data/pokedex.json`);
+const spriteIDs = fs.readFileSync(`${__dirname}/../data/spriteIDs.json`);
 
 const respondJSON = (request, response, status, object) => {
   const headers = { 'Content-Type': 'application/json' };
@@ -29,6 +30,14 @@ const getPokedex = (request, response) => {
   return respondJSON(request, response, 200, responseJSON);
 };
 
+const getSpriteIDs = (request, response) => {
+  // Create the JSON object to send
+  const responseJSON = JSON.parse(spriteIDs);
+
+  // Return with success
+  return respondJSON(request, response, 200, responseJSON);
+};
+
 const notFound = (request, response) => {
   // Create an error response
   const responseJSON = {
@@ -48,6 +57,7 @@ const notFoundMeta = (request, response) => {
 // Exports
 module.exports = {
   getPokedex,
+  getSpriteIDs,
   notFound,
   notFoundMeta,
 };

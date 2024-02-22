@@ -147,4 +147,5 @@ span {
 
 .pokemon-display {
   flex-basis: 15%;
+  border: 1px solid white;
 }

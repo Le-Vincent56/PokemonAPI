@@ -6,6 +6,7 @@ const htmlHandler = require('./htmlResponses.js');
 const cssHandler = require('./cssResponses.js');
 const jsonHandler = require('./jsonResponses.js');
 const jsHandler = require('./jsResponses.js');
+const imgHandler = require('./imgResponses.js');
 
 // Establish port
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
@@ -19,13 +20,15 @@ const urlStruct = {
     '/src/uiEffects.js': jsHandler.getJSFile,
     '/src/databaseLoader.js': jsHandler.getJSFile,
     '/data/pokedex.json': jsonHandler.getPokedex,
+    '/data/spriteIDs.json': jsonHandler.getSpriteIDs,
+    '/getIMG': imgHandler.getIMGFile,
     notFound: jsonHandler.notFound,
   },
   HEAD: {
     notFound: jsonHandler.notFoundMeta,
   },
   POST: {
-    
+
   },
 };
 
@@ -58,6 +61,10 @@ const parseBody = (request, response, handler) => {
 const onRequest = (request, response) => {
   // Parse the URL
   const parsedURL = url.parse(request.url);
+  const params = query.parse(parsedURL.query)
+
+  console.log(parsedURL.query);
+  console.log(params);
 
   // Check if the URL struct contains the request method
   if (!urlStruct[request.method]) {
@@ -76,6 +83,10 @@ const onRequest = (request, response) => {
     // Get requests for .js files
     if (request.method === 'GET' && parsedURL.pathname.substring(0, 5) === '/src/') {
       return urlStruct[request.method][parsedURL.pathname](request, response, parsedURL.pathname);
+    }
+
+    if(request.method === 'GET' && parsedURL.pathname.substring(0, 8) === '/media/') {
+      return urlStruct[request.method][parsedURL.pathname](request, response, params)
     }
 
     // Return the path's response
