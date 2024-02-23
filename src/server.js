@@ -63,9 +63,6 @@ const onRequest = (request, response) => {
   const parsedURL = url.parse(request.url);
   const params = query.parse(parsedURL.query)
 
-  console.log(parsedURL.query);
-  console.log(params);
-
   // Check if the URL struct contains the request method
   if (!urlStruct[request.method]) {
     // If not, return the HEAD's not found response
@@ -85,7 +82,7 @@ const onRequest = (request, response) => {
       return urlStruct[request.method][parsedURL.pathname](request, response, parsedURL.pathname);
     }
 
-    if(request.method === 'GET' && parsedURL.pathname.substring(0, 8) === '/media/') {
+    if(request.method === 'GET' && parsedURL.pathname === "/getIMG") {
       return urlStruct[request.method][parsedURL.pathname](request, response, params)
     }
 
