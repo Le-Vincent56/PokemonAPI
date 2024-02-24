@@ -7,11 +7,6 @@ const respondIMG = (request, response, status, obj) => {
     response.end();
 }
 
-const respondIMGMeta = (request, response, status) => {
-    response.writeHead(status, { 'Content-Type': 'image/png' });
-    response.end();
-}
-
 const getIMGFile = (request, response, params) => {
     if(!params.sprite || params.sprite === undefined)
     {
@@ -24,7 +19,6 @@ const getIMGFile = (request, response, params) => {
       return respondIMG(request, response, 400, responseJSON);
     }
 
-    console.log(params);
     const file = fs.readFileSync(`${__dirname}/../client/media/sprites/${params.sprite}`)
     return respondIMG(request, response, 200, file);
 };

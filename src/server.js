@@ -18,6 +18,7 @@ const urlStruct = {
     '/src/main.js': jsHandler.getMainJS,
     '/src/serverInteraction.js': jsHandler.getJSFile,
     '/src/uiEffects.js': jsHandler.getJSFile,
+    '/src/pokemonInteractor.js': jsHandler.getJSFile,
     '/src/databaseLoader.js': jsHandler.getJSFile,
     '/data/pokedex.json': jsonHandler.getPokedex,
     '/data/spriteIDs.json': jsonHandler.getSpriteIDs,
