@@ -20,16 +20,20 @@ const urlStruct = {
     '/src/uiEffects.js': jsHandler.getJSFile,
     '/src/pokemonInteractor.js': jsHandler.getJSFile,
     '/src/databaseLoader.js': jsHandler.getJSFile,
+    '/src/teamInteractor.js': jsHandler.getJSFile,
     '/data/pokedex.json': jsonHandler.getPokedex,
     '/data/spriteIDs.json': jsonHandler.getSpriteIDs,
-    '/getIMG': imgHandler.getIMGFile,
+    '/data/imageIDs.json': jsonHandler.getImageIDs,
+    '/getSprite': imgHandler.getSpriteFile,
+    '/getImage': imgHandler.getImageFile,
+    '/getTeam': jsonHandler.getTeam,
     notFound: jsonHandler.notFound,
   },
   HEAD: {
     notFound: jsonHandler.notFoundMeta,
   },
   POST: {
-
+    '/saveTeam': jsonHandler.updateTeam
   },
 };
 
@@ -53,7 +57,8 @@ const parseBody = (request, response, handler) => {
   // On end, parse the full body and post the data
   request.on('end', () => {
     const bodyString = Buffer.concat(body).toString();
-    const bodyParams = query.parse(bodyString);
+    const bodyParams = JSON.parse(bodyString);
+    console.log(bodyParams);
 
     handler(request, response, bodyParams);
   });
@@ -83,7 +88,11 @@ const onRequest = (request, response) => {
       return urlStruct[request.method][parsedURL.pathname](request, response, parsedURL.pathname);
     }
 
-    if(request.method === 'GET' && parsedURL.pathname === "/getIMG") {
+    if(request.method === 'GET' && parsedURL.pathname === "/getSprite") {
+      return urlStruct[request.method][parsedURL.pathname](request, response, params)
+    }
+
+    if(request.method === 'GET' && parsedURL.pathname === "/getImage") {
       return urlStruct[request.method][parsedURL.pathname](request, response, params)
     }
 

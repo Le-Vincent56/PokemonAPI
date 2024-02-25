@@ -113,7 +113,7 @@ const loadDisplay = async (spriteIDs, pageNum) => {
         for(let i = pageToNumPokemon[pageNum].min; i < pageToNumPokemon[pageNum].max; i++)
         {
             // Get the src
-            let imgSrc = `/getIMG?sprite=${spriteIDs[i + 1]}`;
+            let imgSrc = `/getSprite?sprite=${spriteIDs[i + 1]}`;
 
             // Assign HTML
             displaySection.innerHTML += 

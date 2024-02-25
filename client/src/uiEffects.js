@@ -16,37 +16,6 @@ const assignSpotHover = () => {
     }
 };
 
-const assignRippleClick = () => {
-    // Assign ripple effects
-    const partySpots = document.querySelectorAll('.party-spot');
-    for(const spot of partySpots) {
-        spot.onclick = (e) => {
-          // Remove the other ripples
-          for(const otherSpots of document.querySelectorAll('.party-spot')) {
-            // Iterate through the other spots
-            if(otherSpots !== spot) {
-              const rippleSpan = otherSpots.querySelector('span');
-
-              // If a ripple exists, remove it
-              if(rippleSpan !== null) {
-                rippleSpan.remove();
-              }
-            }
-          }
-
-          // Get the current x and y of the mouse click
-          const x = e.clientX - e.target.offsetLeft;
-          const y = e.clientY - e.target.offsetTop;
-
-          // Create a span element that animations
-          let ripples = document.createElement('span');
-          ripples.style.left = x + 'px';
-          ripples.style.top = y + 'px';
-          spot.appendChild(ripples);
-        }
-      }
-};
-
 const growDisplayCards = () => {
   // Get the list of display cards
   const displayCards = document.querySelectorAll('.pokemon-display');
@@ -73,10 +42,21 @@ const growDisplayCards = () => {
     index++;
   }, 20);
 };
+const removeRipples = () => {
+  // Remove the other ripples
+  for(const otherSpots of document.querySelectorAll('.party-spot')) {
+    // Iterate through the spot
+    const rippleSpan = otherSpots.querySelector('span');
+
+    // If a ripple exists, remove it
+    if(rippleSpan !== null) {
+        rippleSpan.remove();
+    }
+  }
+}
 
 const init = () => {
     assignSpotHover();
-    assignRippleClick();
 };
 
-export {init, growDisplayCards}
+export {init, growDisplayCards, removeRipples}

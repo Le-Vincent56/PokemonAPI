@@ -1,9 +1,13 @@
 // Imports
 const fs = require('fs');
 
+// Current team
+const currentTeam = {};
+
 // Create an object in memory
 const pokedex = fs.readFileSync(`${__dirname}/../data/pokedex.json`);
 const spriteIDs = fs.readFileSync(`${__dirname}/../data/spriteIDs.json`);
+const imageIDs = fs.readFileSync(`${__dirname}/../data/imageIDs.json`);
 
 const respondJSON = (request, response, status, object) => {
   const headers = { 'Content-Type': 'application/json' };
@@ -38,6 +42,62 @@ const getSpriteIDs = (request, response) => {
   return respondJSON(request, response, 200, responseJSON);
 };
 
+const getImageIDs = (request, response) => {
+  // Create the JSON object to send
+  const responseJSON = JSON.parse(imageIDs);
+
+  // Return with success
+  return respondJSON(request, response, 200, responseJSON);
+}
+
+const getTeam = (request, response) => {
+  // Return the JSON team object
+  return respondJSON(request, response, 200, currentTeam);
+}
+
+const updateTeam = (request, response, data) => {
+  // Create a response
+  const responseJSON = {
+    message: 'Team created successfully',
+    id: 'teamCreatedSuccess',
+  };
+
+  // Parse the data into an object
+  const givenTeam = {
+    name: data.name,
+    pokemon: data.pokemon
+  };
+
+  // Check if both a name and age were given
+  if (!givenTeam.pokemon) {
+    responseJSON.message = 'Team name is required';
+    responseJSON.id = 'addTeamMissingParams';
+
+    // Return with a bad request
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  // Check if a user with the given name already exists
+  if (currentTeam[givenTeam.name]) {
+    // Check if the team is different
+    if (currentTeam[givenTeam.name].pokemon !== givenTeam.pokemon) {
+      // Update the age
+      currentTeam[givenTeam.name].pokemon = givenTeam.pokemon;
+
+      // Return with no content status
+      return respondJSONMeta(request, response, 204);
+    }
+  }
+
+  // Create a new user with the given data
+  currentTeam[givenTeam.name] = {};
+  currentTeam[givenTeam.name].name = givenTeam.name;
+  currentTeam[givenTeam.name].pokemon = givenTeam.pokemon;
+
+  // Return with a created status
+  return respondJSON(request, response, 201, responseJSON);
+};
+
 const notFound = (request, response) => {
   // Create an error response
   const responseJSON = {
@@ -58,6 +118,9 @@ const notFoundMeta = (request, response) => {
 module.exports = {
   getPokedex,
   getSpriteIDs,
+  getImageIDs,
+  getTeam,
+  updateTeam,
   notFound,
   notFoundMeta,
 };
