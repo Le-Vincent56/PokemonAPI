@@ -37,9 +37,6 @@ const handleResponse = async (response, parseResponse) => {
       return obj;
 
     } else {
-      // State that meta data was received if a response should not be parsed
-      content.innerHTML += '<p>Meta Data Received</p>';
-
       return null;
     }
 };
