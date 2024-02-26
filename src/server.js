@@ -33,7 +33,7 @@ const urlStruct = {
     notFound: jsonHandler.notFoundMeta,
   },
   POST: {
-    '/saveTeam': jsonHandler.updateTeam
+    '/saveTeam': jsonHandler.updateTeam,
   },
 };
 
@@ -44,7 +44,7 @@ const parseBody = (request, response, handler) => {
 
   // If there's an error, throw it
   request.on('error', (err) => {
-    console.dir(err);
+    console.log(err);
     response.statusCode = 400;
     response.end();
   });
@@ -58,7 +58,6 @@ const parseBody = (request, response, handler) => {
   request.on('end', () => {
     const bodyString = Buffer.concat(body).toString();
     const bodyParams = JSON.parse(bodyString);
-    console.log(bodyParams);
 
     handler(request, response, bodyParams);
   });
@@ -67,7 +66,7 @@ const parseBody = (request, response, handler) => {
 const onRequest = (request, response) => {
   // Parse the URL
   const parsedURL = url.parse(request.url);
-  const params = query.parse(parsedURL.query)
+  const params = query.parse(parsedURL.query);
 
   // Check if the URL struct contains the request method
   if (!urlStruct[request.method]) {
@@ -88,12 +87,12 @@ const onRequest = (request, response) => {
       return urlStruct[request.method][parsedURL.pathname](request, response, parsedURL.pathname);
     }
 
-    if(request.method === 'GET' && parsedURL.pathname === "/getSprite") {
-      return urlStruct[request.method][parsedURL.pathname](request, response, params)
+    if (request.method === 'GET' && parsedURL.pathname === '/getSprite') {
+      return urlStruct[request.method][parsedURL.pathname](request, response, params);
     }
 
-    if(request.method === 'GET' && parsedURL.pathname === "/getImage") {
-      return urlStruct[request.method][parsedURL.pathname](request, response, params)
+    if (request.method === 'GET' && parsedURL.pathname === '/getImage') {
+      return urlStruct[request.method][parsedURL.pathname](request, response, params);
     }
 
     // Return the path's response

@@ -48,12 +48,12 @@ const getImageIDs = (request, response) => {
 
   // Return with success
   return respondJSON(request, response, 200, responseJSON);
-}
+};
 
 const getTeam = (request, response) => {
   // Return the JSON team object
-  return respondJSON(request, response, 200, currentTeam);
-}
+  respondJSON(request, response, 200, currentTeam);
+};
 
 const updateTeam = (request, response, data) => {
   // Create a response
@@ -65,7 +65,7 @@ const updateTeam = (request, response, data) => {
   // Parse the data into an object
   const givenTeam = {
     name: data.name,
-    pokemon: data.pokemon
+    pokemon: data.pokemon,
   };
 
   // Check if both a name and age were given
