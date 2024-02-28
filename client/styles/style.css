@@ -135,6 +135,21 @@ span {
   transition: opacity 0.3s ease-in-out;
 }
 
+#manage-inputs {
+  display: flex;
+  flex-direction: row;
+}
+
+#input-labels {
+  display: flex;
+  flex-direction: column;
+}
+
+#team-inputs {
+  display: flex;
+  flex-direction: column;
+}
+
 #manage-container {
   display: flex;
   flex-direction: row;
