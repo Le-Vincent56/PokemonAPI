@@ -26,6 +26,12 @@ const init = () => {
         return false;
     }
 
+    const inputTeamName = (e) => {
+        changeTeamName(e.target.value);
+        return true;
+    }
+
+    document.querySelector('#name-input').addEventListener('input', inputTeamName);
     document.querySelector('#save-btn').addEventListener('click', addTeam);
     document.querySelector('#load-btn').addEventListener('click', getTeam);
     document.querySelector('#clear-btn').addEventListener('click', clearTeam);
@@ -120,12 +126,20 @@ const getTeamLength = () => {
     return pokemonKeys.length;
 }
 
+const changeTeamName = (newName) => {
+    // Get the name input
+    currentTeam.name = newName;
+}
+
 const saveTeam = async () => {
     // Remove ripples
     ui.removeRipples();
 
     // Build data
+    let currentTeamName = currentTeam.name;
+    const allTeamsKey = currentTeamName.replace(/\s/g, '');
     const data = JSON.stringify(currentTeam);
+    
 
     let response = await fetch('/saveTeam', {
         method: 'POST',
@@ -140,8 +154,26 @@ const saveTeam = async () => {
     const obj = await serverInteraction.handleResponse(response, true);
     if(obj != null)
     {   
-        allTeams[currentTeam.name] = currentTeam;
-        console.log("All Teams: " + allTeams);
+        allTeams[allTeamsKey] = currentTeam;
+        console.log("All Teams: " + JSON.stringify(allTeams));
+
+        // Get the teams select
+        const teamLoader = document.querySelector('#saved-teams');
+
+        // Update load teams select
+        let loadHTML = '';
+        let allTeamsKeys = Object.keys(allTeams);
+        for(let i = 0; i < allTeamsKeys.length; i++) {
+            // Get the team name and sanitized name
+            let saveName = allTeams[allTeamsKeys[i]].name;
+            let sanitizedName = saveName.replace(/\s/g, '');
+            console.log(`Save Name: ${saveName}, Sanitized Name: ${sanitizedName}`);
+
+            loadHTML += 
+            `<option value="${sanitizedName}">${saveName}</option>
+            `
+        }
+        teamLoader.innerHTML = loadHTML;
     }
 }
 
@@ -149,7 +181,13 @@ const loadTeam = async () => {
     // Remove ripples
     ui.removeRipples();
 
-    let response = await fetch('/getTeam', {
+    // Get the current team name
+    const teamSelect = document.querySelector('#saved-teams');
+    let teamValue = teamSelect.value;
+    let sanitizedValue = teamValue.replace(/\s/g, '');
+    console.log(sanitizedValue);
+
+    let response = await fetch(`/getTeam?name=${sanitizedValue}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -161,7 +199,7 @@ const loadTeam = async () => {
     if(obj != null)
     {
         // Set the current team
-        currentTeam = obj['Team 1']; // TODO: CHANGE THIS TO USE ANY INPUT NAME ONCE THE FIELD IS PUT IN HTML
+        currentTeam = obj['Team 1'];
 
         // Update the team
         updateCurrentTeam();

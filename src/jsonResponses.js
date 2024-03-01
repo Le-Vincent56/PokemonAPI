@@ -50,9 +50,22 @@ const getImageIDs = (request, response) => {
   return respondJSON(request, response, 200, responseJSON);
 };
 
-const getTeam = (request, response) => {
+const getTeam = (request, response, params) => {
+  const returnTeam = currentTeam[params];
+  console.log(JSON.stringify(returnTeam));
+
+  if(!returnTeam)
+  {
+    let responseJSON = {
+      message: 'Team does not exist',
+      id: 'nullTeam'
+    }
+
+    return respondJSON(request, response, 404, responseJSON);
+  }
+
   // Return the JSON team object
-  respondJSON(request, response, 200, currentTeam);
+  respondJSON(request, response, 200, returnTeam);
 };
 
 const updateTeam = (request, response, data) => {
@@ -68,10 +81,19 @@ const updateTeam = (request, response, data) => {
     pokemon: data.pokemon,
   };
 
-  // Check if both a name and age were given
-  if (!givenTeam.pokemon) {
+  // Check if a pokemon name is given
+  if(!givenTeam.name || !givenTeam.name === "") {
     responseJSON.message = 'Team name is required';
-    responseJSON.id = 'addTeamMissingParams';
+    responseJSON.id = 'addTeamMissingName';
+
+    // Return with a bad request
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  // Check if a pokemon team is given
+  if (!givenTeam.pokemon) {
+    responseJSON.message = 'Pokemon team is required';
+    responseJSON.id = 'addTeamNoPokemon';
 
     // Return with a bad request
     return respondJSON(request, response, 400, responseJSON);
