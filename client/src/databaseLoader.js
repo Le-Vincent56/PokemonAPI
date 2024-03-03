@@ -103,6 +103,7 @@ const loadDisplay = async (spriteIDs, pageNum) => {
     const obj = await serverInteraction.handleResponse(response, true);
     if(obj != null)
     {
+        console.log(JSON.stringify(obj));
         // Get the section to display
         const displaySection = document.querySelector("#available-pokemon");
 
@@ -130,8 +131,15 @@ const loadDisplay = async (spriteIDs, pageNum) => {
         // Get the number of boxes to add as empty space
         let originalNum = pageToNumPokemon[pageNum].total;
 
-        // Add enough boxes to create nice even spacings of 6
-        while(originalNum % 9 !== 0)
+        let lineNum = 9;
+
+        if(window.innerWidth < 1024)
+        {
+            lineNum = 6;
+        }
+
+        // Add enough boxes to create nice even spacings
+        while(originalNum % lineNum !== 0)
         {
             // Increment original Num
             originalNum++;
@@ -143,7 +151,7 @@ const loadDisplay = async (spriteIDs, pageNum) => {
         // Grow buttons
         ui.growDisplayCards();
 
-        // Add click events
+        // Add UI events and set styles
         for(let i = pageToNumPokemon[pageNum].min; i < pageToNumPokemon[pageNum].max; i++) {
             const currentMonCard = document.querySelector(`#dex-${i}`);
             currentMonCard.onclick = (e) => {
@@ -160,6 +168,13 @@ const loadDisplay = async (spriteIDs, pageNum) => {
                 // Select the card
                 currentMonCard.querySelector('.select-effect').classList.add('selected');
             };
+
+            // Set styles
+            const text = currentMonCard.querySelector('.hover-name-text');
+            const containerWidth = currentMonCard.offsetWidth;
+            const textWidth = text.scrollWidth;
+            const fontSize = containerWidth / (textWidth / parseFloat(window.getComputedStyle(text).fontSize));
+            text.style.fontSize = `${fontSize}px`;
         }
     }
 };

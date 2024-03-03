@@ -30,6 +30,10 @@ const urlStruct = {
     notFound: jsonHandler.notFound,
   },
   HEAD: {
+    '/data/pokedex.json': jsonHandler.getPokedexMeta,
+    '/data/spriteIDs.json': jsonHandler.getSpriteIDsMeta,
+    '/data/imageIDs.json': jsonHandler.getImageIDsMeta,
+    '/getTeam': jsonHandler.getTeamMeta,
     notFound: jsonHandler.notFoundMeta,
   },
   POST: {
@@ -92,6 +96,9 @@ const onRequest = (request, response) => {
     }
 
     if (request.method === 'GET' && parsedURL.pathname === '/getImage') {
+      return urlStruct[request.method][parsedURL.pathname](request, response, params);
+    }
+    if (request.method === 'GET' && parsedURL.pathname === '/getTeam') {
       return urlStruct[request.method][parsedURL.pathname](request, response, params);
     }
 

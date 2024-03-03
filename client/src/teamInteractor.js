@@ -28,10 +28,16 @@ const init = () => {
 
     const inputTeamName = (e) => {
         changeTeamName(e.target.value);
-        return true;
+    }
+
+    const enterTeamName = (e) => {
+        editTeamName(e.target.value);
     }
 
     document.querySelector('#name-input').addEventListener('input', inputTeamName);
+    document.querySelector('#name-input').addEventListener('change', enterTeamName);
+    document.querySelector('#name-input').addEventListener('focusout', enterTeamName);
+    document.querySelector('#new-btn').addEventListener('click', newTeam);
     document.querySelector('#save-btn').addEventListener('click', addTeam);
     document.querySelector('#load-btn').addEventListener('click', getTeam);
     document.querySelector('#clear-btn').addEventListener('click', clearTeam);
@@ -119,8 +125,6 @@ const removeFromTeam = () => {
 }
 
 const getTeamLength = () => {
-    console.log("Current Team: " + JSON.stringify(currentTeam));
-    console.log("Current Team Pokemon: " + currentTeam.pokemon);
     const pokemonKeys = Object.keys(currentTeam.pokemon);
 
     return pokemonKeys.length;
@@ -131,15 +135,26 @@ const changeTeamName = (newName) => {
     currentTeam.name = newName;
 }
 
+const editTeamName = (nameToEdit) => {
+    let newName = checkDuplicateNames(nameToEdit, true);
+    currentTeam.name = newName;
+
+    // Reset input variables
+    const nameInput = document.querySelector("#name-input");
+    nameInput.value = newName;
+}
+
 const saveTeam = async () => {
     // Remove ripples
     ui.removeRipples();
 
+    // Deep clone currentTeam
+    const currentTeamClone = JSON.parse(JSON.stringify(currentTeam));
+
     // Build data
-    let currentTeamName = currentTeam.name;
-    const allTeamsKey = currentTeamName.replace(/\s/g, '');
-    const data = JSON.stringify(currentTeam);
-    
+    const currentTeamName = currentTeamClone.name;
+    currentTeamClone.name = currentTeamName.replace(/\s/g, '').replace(/\(/g, '%').replace(/\)/g, '%');
+    const data = JSON.stringify(currentTeamClone);
 
     let response = await fetch('/saveTeam', {
         method: 'POST',
@@ -153,9 +168,12 @@ const saveTeam = async () => {
     // Wait for the server to handle the response
     const obj = await serverInteraction.handleResponse(response, true);
     if(obj != null)
-    {   
-        allTeams[allTeamsKey] = currentTeam;
-        console.log("All Teams: " + JSON.stringify(allTeams));
+    {
+        // Return if request was bad
+        if(currentTeamClone.name === "" || Object.keys(currentTeamClone.pokemon).length < 1) return;
+
+        // Add the team to the list of all teams
+        allTeams[currentTeamName] = currentTeamClone;
 
         // Get the teams select
         const teamLoader = document.querySelector('#saved-teams');
@@ -165,15 +183,17 @@ const saveTeam = async () => {
         let allTeamsKeys = Object.keys(allTeams);
         for(let i = 0; i < allTeamsKeys.length; i++) {
             // Get the team name and sanitized name
-            let saveName = allTeams[allTeamsKeys[i]].name;
+            let saveName = allTeamsKeys[i];
             let sanitizedName = saveName.replace(/\s/g, '');
-            console.log(`Save Name: ${saveName}, Sanitized Name: ${sanitizedName}`);
 
             loadHTML += 
-            `<option value="${sanitizedName}">${saveName}</option>
+            `<option value="${sanitizedName}" id="team-${i + 1}">${saveName}</option>
             `
         }
         teamLoader.innerHTML = loadHTML;
+
+        // Update header
+        document.querySelector("#team-header").innerHTML = `CURRENT TEAM (${currentTeamName.toUpperCase()})`;
     }
 }
 
@@ -184,8 +204,7 @@ const loadTeam = async () => {
     // Get the current team name
     const teamSelect = document.querySelector('#saved-teams');
     let teamValue = teamSelect.value;
-    let sanitizedValue = teamValue.replace(/\s/g, '');
-    console.log(sanitizedValue);
+    let sanitizedValue = teamValue.replace(/\s/g, '').replace(/\(/g, '%').replace(/\)/g, '%');
 
     let response = await fetch(`/getTeam?name=${sanitizedValue}`, {
         method: 'GET',
@@ -199,11 +218,31 @@ const loadTeam = async () => {
     if(obj != null)
     {
         // Set the current team
-        currentTeam = obj['Team 1'];
+        currentTeam = obj;
 
         // Update the team
         updateCurrentTeam();
+
+        // Update header
+        const selectedOption = teamSelect.selectedOptions[0];
+        const teamName = selectedOption.innerHTML;
+        document.querySelector("#team-header").innerHTML = `CURRENT TEAM (${teamName.toUpperCase()})` // PUT TEAM NAME HERE
     }
+}
+
+const newTeam = () => {
+    // Clear the team
+    clearTeam();
+
+    // Check duplicate names
+    let newName = checkDuplicateNames("New Team", false);
+
+    // Reset input variables
+    const nameInput = document.querySelector("#name-input");
+    nameInput.value = newName;
+
+    // Set team name
+    currentTeam.name = newName;
 }
 
 const clearTeam = () => {
@@ -218,6 +257,31 @@ const clearTeam = () => {
 
     // Update the team
     updateCurrentTeam();
+}
+
+const checkDuplicateNames = (nameToCheck, editing) => {
+    // Check if editing (true) or making a new team (false)
+    if(editing)
+    {
+        // Don't update when working with the current team
+        if(nameToCheck === currentTeam.name) return nameToCheck;
+    }
+
+    // Get the current teams
+    const teamSelect = document.querySelector("#saved-teams"); // HTML <select> element
+
+    // Check for duplicates
+    let newNameWithNumber = nameToCheck;
+    const existingNames = Array.from(teamSelect.options).map(option => option.text);
+
+    // Append a number to the end of the name depending on the number of duplicates
+    let count = 1;
+    while (existingNames.includes(newNameWithNumber)) {
+        newNameWithNumber = `${nameToCheck} (${count})`;
+        count++;
+    }
+
+    return newNameWithNumber;
 }
 
 const updateCurrentTeam = async () => {

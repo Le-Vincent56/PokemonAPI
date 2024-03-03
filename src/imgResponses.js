@@ -18,8 +18,11 @@ const getSpriteFile = (request, response, params) => {
     return respondIMG(request, response, 400, responseJSON);
   }
 
-  const file = fs.readFileSync(`${__dirname}/../client/media/sprites/${params.sprite}`);
-  return respondIMG(request, response, 200, file);
+  const responseJSON = {};
+  responseJSON.file = fs.readFileSync(`${__dirname}/../client/media/sprites/${params.sprite}`);
+  responseJSON.message = `Retrieved Sprite: ${params.sprite}`;
+  responseJSON.id = 'retrievedSprite';
+  return respondIMG(request, response, 200, responseJSON.file);
 };
 
 const getImageFile = (request, response, params) => {
@@ -33,8 +36,11 @@ const getImageFile = (request, response, params) => {
     return respondIMG(request, response, 400, responseJSON);
   }
 
-  const file = fs.readFileSync(`${__dirname}/../client/media/images/${params.image}`);
-  return respondIMG(request, response, 200, file);
+  const responseJSON = {};
+  responseJSON.file = fs.readFileSync(`${__dirname}/../client/media/images/${params.image}`);
+  responseJSON.message = `Retrieved Sprite: ${params.sprite}`;
+  responseJSON.id = 'retrievedImage';
+  return respondIMG(request, response, 200, responseJSON.file);
 };
 
 // Exports

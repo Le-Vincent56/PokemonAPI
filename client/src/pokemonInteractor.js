@@ -65,7 +65,15 @@ const clearPokemonInfo = () => {
 
 const showPokemonInfo = () => {
     const informationContainer = document.querySelector("#pokemon-information")
-    informationContainer.style.height = '900px'
+
+    if(window.innerWidth < 320) {
+        informationContainer.style.height = '500px'
+    } else if(window.innerWidth > 320 && window.innerWidth < 768) {
+        informationContainer.style.height = '500px'
+    } else {
+        informationContainer.style.height = '900px'
+    }
+    
     informationContainer.style.opacity = '1';
     showingInfo = true;
 }
@@ -248,8 +256,7 @@ const updateButtons = async (pokedex, id) => {
         const addBtn = document.querySelector('#add-btn');
         const removeBtn = document.querySelector('#remove-btn');
 
-        // TODO: If the pokemon exists in the party, then highlight the remove button, otherwise
-        // highlight the add button
+        // Set events
         if(addBtn) {
             addBtn.onclick = () => { 
                 teamInteractor.addToTeam(pokedex[id].name.english, id, `/getSprite?sprite=${obj[Number(id) + 1]}`)
